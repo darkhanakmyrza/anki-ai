@@ -169,7 +169,7 @@ export default function Home() {
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Add Word Form */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="sticky top-6">
+            <div className="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto pr-1.5 scrollbar-thin">
               <AddWordForm onCardAdded={handleCardAddedOrUpdated} />
             </div>
           </div>
