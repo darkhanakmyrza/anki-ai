@@ -79,19 +79,19 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
         Add New Word
       </h2>
 
-      <form onSubmit={handleGenerate} className="flex gap-2">
+      <form onSubmit={handleGenerate} className="flex flex-col gap-3">
         <input
           type="text"
           value={word}
           onChange={(e) => setWord(e.target.value)}
           placeholder="Enter an English word (e.g. ephemeral)..."
           disabled={isLoading || isSaving}
-          className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 disabled:opacity-60"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 disabled:opacity-60"
         />
         <button
           type="submit"
           disabled={isLoading || isSaving || !word.trim()}
-          className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center gap-2 whitespace-nowrap"
+          className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2 whitespace-nowrap"
         >
           {isLoading ? (
             <>
