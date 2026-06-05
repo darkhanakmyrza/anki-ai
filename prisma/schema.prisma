@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Card {
+  id             Int       @id @default(autoincrement())
+  word           String    @unique
+
+  definition     String
+  translation    String
+  partOfSpeech   String
+  forms          Json
+  pronunciation  String
+  examples       Json
+  synonyms       Json
+  antonyms       Json
+
+  interval       Int       @default(1)
+  easeFactor     Float     @default(2.5)
+  repetitions    Int       @default(0)
+  nextReview     DateTime  @default(now())
+  lastReview     DateTime?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
