@@ -10,6 +10,23 @@ export default function StudyPage() {
   const [stats, setStats] = useState({ total: 0, due: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPracticeMode, setIsPracticeMode] = useState(false);
+  const [isPracticeLoading, setIsPracticeLoading] = useState(false);
+
+  const startPracticeMode = async () => {
+    try {
+      setIsPracticeLoading(true);
+      const res = await fetch("/api/cards?limit=100");
+      if (!res.ok) throw new Error("Failed to fetch cards for practice.");
+      const data = await res.json();
+      setCards(data.cards);
+      setIsPracticeMode(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to start practice mode.");
+    } finally {
+      setIsPracticeLoading(false);
+    }
+  };
 
   useEffect(() => {
     async function loadCardsAndStats() {
@@ -67,12 +84,14 @@ export default function StudyPage() {
     );
   }
 
-  // Filter cards where nextReview is less than or equal to now.
+  // Filter cards based on whether practice mode is active.
   const now = new Date();
-  const dueCards = cards.filter((card) => {
-    const nextReviewDate = new Date(card.nextReview);
-    return nextReviewDate <= now;
-  });
+  const activeQueue = isPracticeMode
+    ? cards
+    : cards.filter((card) => {
+        const nextReviewDate = new Date(card.nextReview);
+        return nextReviewDate <= now;
+      });
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-indigo-50/50 via-slate-50 to-indigo-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950/80 p-4 md:p-8">
@@ -94,7 +113,7 @@ export default function StudyPage() {
           </h1>
         </header>
 
-        {dueCards.length === 0 ? (
+        {activeQueue.length === 0 ? (
           <div className="max-w-md mx-auto text-center py-12 px-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/40 dark:border-slate-800/80 rounded-3xl shadow-xl space-y-5">
             <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-indigo-500/10 text-indigo-500 mb-2">
               <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,17 +137,36 @@ export default function StudyPage() {
                 </p>
               )}
             </div>
-            <div className="pt-2">
+            <div className="pt-3 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/"
-                className="inline-block px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-sm transition"
+                className="px-6 py-2.5 bg-slate-150 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-semibold rounded-xl transition flex items-center justify-center"
               >
                 Go to Deck List
               </Link>
+              {stats.total > 0 && (
+                <button
+                  onClick={startPracticeMode}
+                  disabled={isPracticeLoading}
+                  className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/15 hover:shadow-indigo-500/25 transition disabled:opacity-50 flex items-center justify-center gap-1.5"
+                >
+                  {isPracticeLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Loading...
+                    </>
+                  ) : (
+                    "Practice Anyway"
+                  )}
+                </button>
+              )}
             </div>
           </div>
         ) : (
-          <StudySession initialCards={dueCards} />
+          <StudySession initialCards={activeQueue} />
         )}
       </div>
     </div>
