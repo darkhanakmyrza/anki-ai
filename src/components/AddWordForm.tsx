@@ -96,8 +96,8 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
   // Manual entry save handler
   const handleManualSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!word.trim() || !translation.trim() || !definition.trim()) {
-      setError("Word, translation, and definition are required.");
+    if (!word.trim() || !translation.trim()) {
+      setError("Word and translation are required.");
       return;
     }
 
@@ -314,9 +314,8 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
               type="text"
               value={definition}
               onChange={(e) => setDefinition(e.target.value)}
-              placeholder="Short English definition"
+              placeholder="Short English definition (optional)"
               disabled={isSaving}
-              required
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -359,7 +358,7 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
 
           <button
             type="submit"
-            disabled={isSaving || !word.trim() || !translation.trim() || !definition.trim()}
+            disabled={isSaving || !word.trim() || !translation.trim()}
             className="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold rounded-xl shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
           >
             {isSaving ? (

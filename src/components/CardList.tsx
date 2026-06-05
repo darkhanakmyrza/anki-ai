@@ -350,7 +350,6 @@ export default function CardList({
                 <textarea
                   value={editDefinition}
                   onChange={(e) => setEditDefinition(e.target.value)}
-                  required
                   rows={2}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                 />
