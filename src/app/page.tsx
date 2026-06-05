@@ -1,101 +1,205 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card } from "@/types/card";
+import AddWordForm from "@/components/AddWordForm";
+import CardList from "@/components/CardList";
+import Link from "next/link";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [cards, setCards] = useState<Card[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  const loadCards = async () => {
+    try {
+      const res = await fetch("/api/cards");
+      if (!res.ok) throw new Error("Failed to fetch cards.");
+      const data = await res.json();
+      setCards(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load cards.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCards();
+  }, []);
+
+  // Calculate stats
+  const now = new Date();
+  const dueCards = cards.filter((card) => {
+    const nextReviewDate = new Date(card.nextReview);
+    return nextReviewDate <= now;
+  });
+
+  const totalCardsCount = cards.length;
+  const dueCardsCount = dueCards.length;
+
+  // Calculate Streak based on lastReview dates
+  const calculateStreak = (allCards: Card[]): number => {
+    const reviewDates = allCards
+      .map((c) => c.lastReview)
+      .filter((date): date is Date => date !== null)
+      .map((date) => {
+        const d = new Date(date);
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      });
+
+    if (reviewDates.length === 0) return 0;
+
+    // Remove duplicates and sort descending
+    const uniqueSortedDates = Array.from(new Set(reviewDates)).sort((a, b) => b - a);
+
+    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const yesterdayDate = todayDate - 24 * 60 * 60 * 1000;
+
+    let streak = 0;
+    let expectedDate = todayDate;
+
+    // If no review today, check if yesterday was reviewed to maintain streak
+    if (uniqueSortedDates[0] !== todayDate) {
+      if (uniqueSortedDates[0] === yesterdayDate) {
+        expectedDate = yesterdayDate;
+      } else {
+        return 0; // Streak broken
+      }
+    }
+
+    for (const reviewTime of uniqueSortedDates) {
+      if (reviewTime === expectedDate) {
+        streak++;
+        expectedDate -= 24 * 60 * 60 * 1000; // Shift expected back by 1 day
+      } else {
+        break; // Streak interrupted
+      }
+    }
+
+    return streak;
+  };
+
+  const currentStreak = calculateStreak(cards);
+
+  return (
+    <main className="min-h-screen bg-gradient-to-tr from-indigo-50/50 via-slate-50 to-indigo-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950/80 p-4 md:p-8">
+      <div className="max-w-5xl mx-auto space-y-8">
+        
+        {/* Navigation & Header */}
+        <header className="flex flex-col sm:flex-row justify-between items-center gap-4 pb-6 border-b border-slate-200/50 dark:border-slate-800/60">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-600/30">
+              A
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
+                anki-ai
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                AI-powered vocabulary spaced repetition
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {dueCardsCount > 0 ? (
+              <Link
+                href="/study"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all duration-200 text-sm flex items-center gap-2"
+              >
+                <span>Study Now</span>
+                <span className="h-5 w-5 bg-white/20 text-white text-[11px] font-black rounded-full flex items-center justify-center px-1">
+                  {dueCardsCount}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/study"
+                className="px-6 py-3 bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 dark:hover:bg-slate-800 text-white dark:text-slate-200 font-semibold rounded-xl text-sm transition"
+              >
+                Study Deck
+              </Link>
+            )}
+          </div>
+        </header>
+
+        {/* Dashboard Statistics (Phase 3 feature) */}
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex items-center gap-4">
+            <div className="p-3 bg-indigo-500/10 text-indigo-500 rounded-xl">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Total Words</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{totalCardsCount}</span>
+            </div>
+          </div>
+
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex items-center gap-4">
+            <div className="p-3 bg-rose-500/10 text-rose-500 rounded-xl">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Due Today</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{dueCardsCount}</span>
+            </div>
+          </div>
+
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex items-center gap-4">
+            <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Streak</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{currentStreak} {currentStreak === 1 ? "day" : "days"}</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Add Word Form */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="sticky top-6">
+              <AddWordForm onCardAdded={loadCards} />
+            </div>
+          </div>
+
+          {/* Card List */}
+          <div className="lg:col-span-2 space-y-6">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <span className="h-5 w-5 bg-indigo-500/10 text-indigo-500 rounded flex items-center justify-center">
+                📚
+              </span>
+              Your Deck
+            </h2>
+
+            {isLoading ? (
+              <div className="text-center py-12 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200/30 dark:border-slate-800/30 rounded-2xl">
+                <svg className="animate-spin h-8 w-8 text-indigo-600 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <p className="text-slate-500 text-sm font-medium">Loading your cards...</p>
+              </div>
+            ) : error ? (
+              <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-600 dark:text-rose-400 text-sm font-medium">
+                {error}
+              </div>
+            ) : (
+              <CardList cards={cards} onCardUpdated={loadCards} />
+            )}
+          </div>
+        </section>
+
+      </div>
+    </main>
   );
 }
