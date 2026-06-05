@@ -32,7 +32,7 @@ Rules:
 
   const modelNames = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
   let result = null;
-  const errors: { model: string; error: any }[] = [];
+  const errors: { model: string; error: unknown }[] = [];
 
   for (const modelName of modelNames) {
     try {
@@ -44,8 +44,9 @@ Rules:
       });
       result = await model.generateContent(prompt);
       break; // Success!
-    } catch (err: any) {
-      console.warn(`Failed to generate content with ${modelName}:`, err?.message || err);
+    } catch (err) {
+      const error = err as Error;
+      console.warn(`Failed to generate content with ${modelName}:`, error?.message || error);
       errors.push({ model: modelName, error: err });
     }
   }

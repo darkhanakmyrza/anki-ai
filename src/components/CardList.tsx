@@ -6,11 +6,26 @@ import { Card } from "@/types/card";
 interface CardListProps {
   cards: Card[];
   onCardUpdated: () => void;
+  searchInput: string;
+  setSearchInput: (val: string) => void;
+  partOfSpeechFilter: string;
+  setPartOfSpeechFilter: (val: string) => void;
+  hasMore: boolean;
+  onLoadMore: () => void;
+  isLoadingMore: boolean;
 }
 
-export default function CardList({ cards, onCardUpdated }: CardListProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [partOfSpeechFilter, setPartOfSpeechFilter] = useState("all");
+export default function CardList({
+  cards,
+  onCardUpdated,
+  searchInput,
+  setSearchInput,
+  partOfSpeechFilter,
+  setPartOfSpeechFilter,
+  hasMore,
+  onLoadMore,
+  isLoadingMore,
+}: CardListProps) {
   const [editingCard, setEditingCard] = useState<Card | null>(null);
   const [editWord, setEditWord] = useState("");
   const [editTranslation, setEditTranslation] = useState("");
@@ -23,21 +38,11 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Filter and search cards
-  const filteredCards = cards.filter((card) => {
-    const matchesSearch =
-      card.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      card.translation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      card.definition.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filtered cards are handled entirely on the server side
+  const filteredCards = cards;
 
-    const matchesFilter =
-      partOfSpeechFilter === "all" || card.partOfSpeech === partOfSpeechFilter;
-
-    return matchesSearch && matchesFilter;
-  });
-
-  // Unique parts of speech for filtering
-  const partsOfSpeech = ["all", ...Array.from(new Set(cards.map((c) => c.partOfSpeech)))];
+  // Standard static parts of speech supported in the dictionary lookups
+  const partsOfSpeech = ["all", "noun", "verb", "adjective", "adverb", "phrase"];
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this card?")) return;
@@ -134,8 +139,8 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
           <input
             type="text"
             placeholder="Search cards..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-250 dark:border-slate-850 bg-white/60 dark:bg-slate-950/60 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
           />
         </div>
@@ -157,10 +162,10 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
       {filteredCards.length === 0 ? (
         <div className="text-center py-12 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200/30 dark:border-slate-800/30 rounded-2xl">
           <p className="text-slate-500 dark:text-slate-400 text-lg">No cards found.</p>
-          {searchQuery || partOfSpeechFilter !== "all" ? (
+          {searchInput || partOfSpeechFilter !== "all" ? (
             <button
               onClick={() => {
-                setSearchQuery("");
+                setSearchInput("");
                 setPartOfSpeechFilter("all");
               }}
               className="mt-3 text-sm text-indigo-500 hover:text-indigo-400 font-medium"
@@ -249,6 +254,24 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {hasMore && (
+        <div className="flex justify-center pt-6">
+          <button
+            onClick={onLoadMore}
+            disabled={isLoadingMore}
+            className="px-6 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-sm font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-850 shadow-sm transition disabled:opacity-50 flex items-center gap-2"
+          >
+            {isLoadingMore && (
+              <svg className="animate-spin h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            )}
+            {isLoadingMore ? "Loading..." : "Load More Words"}
+          </button>
         </div>
       )}
 

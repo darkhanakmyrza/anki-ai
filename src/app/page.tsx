@@ -9,34 +9,90 @@ import Link from "next/link";
 export default function Home() {
   const [cards, setCards] = useState<Card[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Server-side stats and pagination states
+  const [stats, setStats] = useState({ total: 0, due: 0 });
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [partOfSpeechFilter, setPartOfSpeechFilter] = useState("all");
 
-  const loadCards = async () => {
+  const loadStats = async () => {
     try {
-      const res = await fetch("/api/cards");
+      const res = await fetch("/api/cards/stats");
+      if (!res.ok) throw new Error("Failed to fetch stats.");
+      const data = await res.json();
+      setStats(data);
+    } catch (err) {
+      console.error("Failed to load stats:", err);
+    }
+  };
+
+  const loadCards = async (currentPage: number, search: string, filter: string, append = false) => {
+    try {
+      if (append) {
+        setIsLoadingMore(true);
+      } else {
+        setIsLoading(true);
+      }
+      setError(null);
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: "12",
+        search: search.trim(),
+        partOfSpeech: filter,
+      });
+      const res = await fetch(`/api/cards?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch cards.");
       const data = await res.json();
-      setCards(data);
+      
+      if (append) {
+        setCards((prev) => [...prev, ...data.cards]);
+      } else {
+        setCards(data.cards);
+      }
+      setHasMore(data.hasMore);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load cards.");
     } finally {
       setIsLoading(false);
+      setIsLoadingMore(false);
     }
   };
 
+  // 1. Load stats on mount
   useEffect(() => {
-    loadCards();
+    loadStats();
   }, []);
 
-  // Calculate stats
-  const now = new Date();
-  const dueCards = cards.filter((card) => {
-    const nextReviewDate = new Date(card.nextReview);
-    return nextReviewDate <= now;
-  });
+  // 2. Debounce search query input (300ms)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchQuery(searchInput);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchInput]);
 
-  const totalCardsCount = cards.length;
-  const dueCardsCount = dueCards.length;
+  // 3. Fetch cards when debounced search or filter changes
+  useEffect(() => {
+    setPage(1);
+    loadCards(1, searchQuery, partOfSpeechFilter, false);
+  }, [searchQuery, partOfSpeechFilter]);
+
+  const handleCardAddedOrUpdated = () => {
+    loadStats();
+    setPage(1);
+    loadCards(1, searchQuery, partOfSpeechFilter, false);
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    loadCards(nextPage, searchQuery, partOfSpeechFilter, true);
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-tr from-indigo-50/50 via-slate-50 to-indigo-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950/80 p-4 md:p-8">
@@ -59,14 +115,14 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3">
-            {dueCardsCount > 0 ? (
+            {stats.due > 0 ? (
               <Link
                 href="/study"
                 className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all duration-200 text-sm flex items-center gap-2"
               >
                 <span>Study Now</span>
                 <span className="h-5 w-5 bg-white/20 text-white text-[11px] font-black rounded-full flex items-center justify-center px-1">
-                  {dueCardsCount}
+                  {stats.due}
                 </span>
               </Link>
             ) : (
@@ -90,7 +146,7 @@ export default function Home() {
             </div>
             <div>
               <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Total Words</span>
-              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{totalCardsCount}</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{stats.total}</span>
             </div>
           </div>
 
@@ -102,7 +158,7 @@ export default function Home() {
             </div>
             <div>
               <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Due Today</span>
-              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{dueCardsCount}</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{stats.due}</span>
             </div>
           </div>
         </section>
@@ -112,7 +168,7 @@ export default function Home() {
           {/* Add Word Form */}
           <div className="lg:col-span-1 space-y-6">
             <div className="sticky top-6">
-              <AddWordForm onCardAdded={loadCards} />
+              <AddWordForm onCardAdded={handleCardAddedOrUpdated} />
             </div>
           </div>
 
@@ -125,7 +181,7 @@ export default function Home() {
               Your Deck
             </h2>
 
-            {isLoading ? (
+            {isLoading && cards.length === 0 ? (
               <div className="text-center py-12 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200/30 dark:border-slate-800/30 rounded-2xl">
                 <svg className="animate-spin h-8 w-8 text-indigo-600 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -134,11 +190,21 @@ export default function Home() {
                 <p className="text-slate-500 text-sm font-medium">Loading your cards...</p>
               </div>
             ) : error ? (
-              <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-600 dark:text-rose-400 text-sm font-medium">
+              <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-600 dark:text-rose-450 text-sm font-medium">
                 {error}
               </div>
             ) : (
-              <CardList cards={cards} onCardUpdated={loadCards} />
+              <CardList
+                cards={cards}
+                onCardUpdated={handleCardAddedOrUpdated}
+                searchInput={searchInput}
+                setSearchInput={setSearchInput}
+                partOfSpeechFilter={partOfSpeechFilter}
+                setPartOfSpeechFilter={setPartOfSpeechFilter}
+                hasMore={hasMore}
+                onLoadMore={handleLoadMore}
+                isLoadingMore={isLoadingMore}
+              />
             )}
           </div>
         </section>

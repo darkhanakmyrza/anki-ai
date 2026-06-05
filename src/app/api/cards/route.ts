@@ -1,14 +1,65 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const cards = await prisma.card.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return NextResponse.json(cards);
+    const { searchParams } = new URL(request.url);
+    const dueOnly = searchParams.get("dueOnly") === "true";
+
+    if (dueOnly) {
+      const now = new Date();
+      const cards = await prisma.card.findMany({
+        where: {
+          nextReview: {
+            lte: now,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return NextResponse.json(cards);
+    }
+
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "12", 10);
+    const search = searchParams.get("search") || "";
+    const partOfSpeech = searchParams.get("partOfSpeech") || "all";
+
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.CardWhereInput = {};
+
+    if (search.trim() !== "") {
+      where.OR = [
+        { word: { contains: search.trim().toLowerCase(), mode: "insensitive" } },
+        { translation: { contains: search.trim().toLowerCase(), mode: "insensitive" } },
+      ];
+    }
+
+    if (partOfSpeech !== "all") {
+      where.partOfSpeech = {
+        equals: partOfSpeech.toLowerCase(),
+        mode: "insensitive",
+      };
+    }
+
+    const [cards, total] = await Promise.all([
+      prisma.card.findMany({
+        where,
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.card.count({ where }),
+    ]);
+
+    const hasMore = skip + cards.length < total;
+
+    return NextResponse.json({ cards, total, hasMore });
   } catch (error) {
     console.error("Error fetching cards:", error);
     return NextResponse.json(

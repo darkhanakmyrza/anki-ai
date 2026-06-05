@@ -13,7 +13,7 @@ export default function StudyPage() {
   useEffect(() => {
     async function loadCards() {
       try {
-        const res = await fetch("/api/cards");
+        const res = await fetch("/api/cards?dueOnly=true");
         if (!res.ok) throw new Error("Failed to fetch cards.");
         const data = await res.json();
         setCards(data);
