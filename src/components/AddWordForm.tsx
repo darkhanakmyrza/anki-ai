@@ -267,60 +267,58 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Translation</label>
-              <input
-                type="text"
-                value={translation}
-                onChange={(e) => setTranslation(e.target.value)}
-                placeholder="Russian translation"
-                disabled={isSaving}
-                required
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Part of Speech</label>
-              <select
-                value={partOfSpeech}
-                onChange={(e) => setPartOfSpeech(e.target.value)}
-                disabled={isSaving}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-700 dark:text-slate-200 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="noun">Noun</option>
-                <option value="verb">Verb</option>
-                <option value="adjective">Adjective</option>
-                <option value="adverb">Adverb</option>
-                <option value="phrase">Phrase</option>
-              </select>
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Translation</label>
+            <input
+              type="text"
+              value={translation}
+              onChange={(e) => setTranslation(e.target.value)}
+              placeholder="Translation (e.g. мимолётный)"
+              disabled={isSaving}
+              required
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Pronunciation (IPA)</label>
-              <input
-                type="text"
-                value={pronunciation}
-                onChange={(e) => setPronunciation(e.target.value)}
-                placeholder="e.g. /ɪˈfem.ər.əl/"
-                disabled={isSaving}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Definition</label>
-              <input
-                type="text"
-                value={definition}
-                onChange={(e) => setDefinition(e.target.value)}
-                placeholder="Short English definition"
-                disabled={isSaving}
-                required
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Part of Speech</label>
+            <select
+              value={partOfSpeech}
+              onChange={(e) => setPartOfSpeech(e.target.value)}
+              disabled={isSaving}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-700 dark:text-slate-200 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="noun">Noun</option>
+              <option value="verb">Verb</option>
+              <option value="adjective">Adjective</option>
+              <option value="adverb">Adverb</option>
+              <option value="phrase">Phrase</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Pronunciation (IPA)</label>
+            <input
+              type="text"
+              value={pronunciation}
+              onChange={(e) => setPronunciation(e.target.value)}
+              placeholder="e.g. /ɪˈfem.ər.əl/"
+              disabled={isSaving}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Definition</label>
+            <input
+              type="text"
+              value={definition}
+              onChange={(e) => setDefinition(e.target.value)}
+              placeholder="Short English definition"
+              disabled={isSaving}
+              required
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
 
           <div>
@@ -335,29 +333,28 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma-separated)</label>
-              <input
-                type="text"
-                value={synonyms}
-                onChange={(e) => setSynonyms(e.target.value)}
-                placeholder="synonym1, synonym2"
-                disabled={isSaving}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma-separated)</label>
-              <input
-                type="text"
-                value={antonyms}
-                onChange={(e) => setAntonyms(e.target.value)}
-                placeholder="antonym1, antonym2"
-                disabled={isSaving}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma-separated)</label>
+            <input
+              type="text"
+              value={synonyms}
+              onChange={(e) => setSynonyms(e.target.value)}
+              placeholder="synonym1, synonym2"
+              disabled={isSaving}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma-separated)</label>
+            <input
+              type="text"
+              value={antonyms}
+              onChange={(e) => setAntonyms(e.target.value)}
+              placeholder="antonym1, antonym2"
+              disabled={isSaving}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
 
           <button
