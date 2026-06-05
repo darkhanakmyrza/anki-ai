@@ -335,25 +335,25 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
 
           <div>
             <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma-separated)</label>
-            <input
-              type="text"
+            <textarea
               value={synonyms}
               onChange={(e) => setSynonyms(e.target.value)}
               placeholder="synonym1, synonym2"
               disabled={isSaving}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              rows={2}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
             />
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma-separated)</label>
-            <input
-              type="text"
+            <textarea
               value={antonyms}
               onChange={(e) => setAntonyms(e.target.value)}
               placeholder="antonym1, antonym2"
               disabled={isSaving}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              rows={2}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
             />
           </div>
 

@@ -344,27 +344,25 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma separated)</label>
-                  <input
-                    type="text"
-                    value={editSynonyms}
-                    onChange={(e) => setEditSynonyms(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="fleeting, transient, ephemeral..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma separated)</label>
-                  <input
-                    type="text"
-                    value={editAntonyms}
-                    onChange={(e) => setEditAntonyms(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="permanent, eternal..."
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma separated)</label>
+                <textarea
+                  value={editSynonyms}
+                  onChange={(e) => setEditSynonyms(e.target.value)}
+                  rows={2}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  placeholder="fleeting, transient, ephemeral..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma separated)</label>
+                <textarea
+                  value={editAntonyms}
+                  onChange={(e) => setEditAntonyms(e.target.value)}
+                  rows={2}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  placeholder="permanent, eternal..."
+                />
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-slate-100 dark:border-slate-800">
