@@ -181,10 +181,10 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
               {/* Top Bar with metadata and Action buttons */}
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 capitalize">
+                  <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 capitalize">
                     {card.word}
                   </h3>
-                  <p className="text-xs text-indigo-500 font-mono mt-0.5">
+                  <p className="text-sm text-indigo-500 font-mono mt-0.5">
                     {card.pronunciation} • <span className="italic">{card.partOfSpeech}</span>
                   </p>
                 </div>
@@ -212,22 +212,19 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
               </div>
 
               {/* Translation & Definition */}
-              <div className="space-y-2 mb-4 text-sm">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Translation</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200">{card.translation}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Definition</span>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{card.definition}</p>
-                </div>
+              <div className="space-y-1.5 mb-4">
+                <p className="text-xl font-bold text-indigo-650 dark:text-indigo-400 tracking-tight">
+                  {card.translation}
+                </p>
+                <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {card.definition}
+                </p>
               </div>
 
               {/* Examples */}
               {Array.isArray(card.examples) && card.examples.length > 0 && (
-                <div className="mb-4">
-                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">Examples</span>
-                  <ul className="list-disc list-inside space-y-1 text-xs text-slate-500 dark:text-slate-450 italic">
+                <div className="mb-4 bg-slate-50 dark:bg-slate-950/40 p-3.5 rounded-xl border border-slate-150 dark:border-slate-850">
+                  <ul className="list-disc list-inside space-y-1.5 text-sm text-slate-500 dark:text-slate-400 italic">
                     {card.examples.slice(0, 2).map((ex, idx) => (
                       <li key={idx}>&ldquo;{ex}&rdquo;</li>
                     ))}
@@ -282,89 +279,89 @@ export default function CardList({ cards, onCardUpdated }: CardListProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Word</label>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Word</label>
                   <input
                     type="text"
                     value={editWord}
                     onChange={(e) => setEditWord(e.target.value)}
                     required
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pronunciation</label>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Pronunciation</label>
                   <input
                     type="text"
                     value={editPronunciation}
                     onChange={(e) => setEditPronunciation(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Translation</label>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Translation</label>
                   <input
                     type="text"
                     value={editTranslation}
                     onChange={(e) => setEditTranslation(e.target.value)}
                     required
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Part Of Speech</label>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Part Of Speech</label>
                   <input
                     type="text"
                     value={editPartOfSpeech}
                     onChange={(e) => setEditPartOfSpeech(e.target.value)}
                     required
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Definition</label>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Definition</label>
                 <textarea
                   value={editDefinition}
                   onChange={(e) => setEditDefinition(e.target.value)}
                   required
                   rows={2}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Examples (One per line)</label>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Examples (One per line)</label>
                 <textarea
                   value={editExamples}
                   onChange={(e) => setEditExamples(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter example sentences, one per line..."
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Synonyms (Comma separated)</label>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma separated)</label>
                   <input
                     type="text"
                     value={editSynonyms}
                     onChange={(e) => setEditSynonyms(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="fleeting, transient, ephemeral..."
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Antonyms (Comma separated)</label>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma separated)</label>
                   <input
                     type="text"
                     value={editAntonyms}
                     onChange={(e) => setEditAntonyms(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-805 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="permanent, eternal..."
                   />
                 </div>

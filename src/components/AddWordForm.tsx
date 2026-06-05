@@ -255,7 +255,7 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
         /* MANUAL ENTRY VIEW */
         <form onSubmit={handleManualSave} className="space-y-4">
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Word</label>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Word</label>
             <input
               type="text"
               value={word}
@@ -263,13 +263,13 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
               placeholder="e.g. ephemeral"
               disabled={isSaving}
               required
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Translation</label>
+              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Translation</label>
               <input
                 type="text"
                 value={translation}
@@ -277,16 +277,16 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
                 placeholder="Russian translation"
                 disabled={isSaving}
                 required
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Part of Speech</label>
+              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Part of Speech</label>
               <select
                 value={partOfSpeech}
                 onChange={(e) => setPartOfSpeech(e.target.value)}
                 disabled={isSaving}
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-700 dark:text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-700 dark:text-slate-200 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="noun">Noun</option>
                 <option value="verb">Verb</option>
@@ -299,18 +299,18 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pronunciation (IPA)</label>
+              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Pronunciation (IPA)</label>
               <input
                 type="text"
                 value={pronunciation}
                 onChange={(e) => setPronunciation(e.target.value)}
                 placeholder="e.g. /ɪˈfem.ər.əl/"
                 disabled={isSaving}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Definition</label>
+              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Definition</label>
               <input
                 type="text"
                 value={definition}
@@ -318,44 +318,44 @@ export default function AddWordForm({ onCardAdded }: AddWordFormProps) {
                 placeholder="Short English definition"
                 disabled={isSaving}
                 required
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Examples (One per line)</label>
+            <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Examples (One per line)</label>
             <textarea
               value={examples}
               onChange={(e) => setExamples(e.target.value)}
               placeholder="Enter sentence examples..."
               disabled={isSaving}
               rows={2}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Synonyms (Comma-separated)</label>
+              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Synonyms (Comma-separated)</label>
               <input
                 type="text"
                 value={synonyms}
                 onChange={(e) => setSynonyms(e.target.value)}
                 placeholder="synonym1, synonym2"
                 disabled={isSaving}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Antonyms (Comma-separated)</label>
+              <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Antonyms (Comma-separated)</label>
               <input
                 type="text"
                 value={antonyms}
                 onChange={(e) => setAntonyms(e.target.value)}
                 placeholder="antonym1, antonym2"
                 disabled={isSaving}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-850 dark:text-slate-100 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>

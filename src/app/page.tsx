@@ -38,50 +38,6 @@ export default function Home() {
   const totalCardsCount = cards.length;
   const dueCardsCount = dueCards.length;
 
-  // Calculate Streak based on lastReview dates
-  const calculateStreak = (allCards: Card[]): number => {
-    const reviewDates = allCards
-      .map((c) => c.lastReview)
-      .filter((date): date is Date => date !== null)
-      .map((date) => {
-        const d = new Date(date);
-        return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-      });
-
-    if (reviewDates.length === 0) return 0;
-
-    // Remove duplicates and sort descending
-    const uniqueSortedDates = Array.from(new Set(reviewDates)).sort((a, b) => b - a);
-
-    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    const yesterdayDate = todayDate - 24 * 60 * 60 * 1000;
-
-    let streak = 0;
-    let expectedDate = todayDate;
-
-    // If no review today, check if yesterday was reviewed to maintain streak
-    if (uniqueSortedDates[0] !== todayDate) {
-      if (uniqueSortedDates[0] === yesterdayDate) {
-        expectedDate = yesterdayDate;
-      } else {
-        return 0; // Streak broken
-      }
-    }
-
-    for (const reviewTime of uniqueSortedDates) {
-      if (reviewTime === expectedDate) {
-        streak++;
-        expectedDate -= 24 * 60 * 60 * 1000; // Shift expected back by 1 day
-      } else {
-        break; // Streak interrupted
-      }
-    }
-
-    return streak;
-  };
-
-  const currentStreak = calculateStreak(cards);
-
   return (
     <main className="min-h-screen bg-gradient-to-tr from-indigo-50/50 via-slate-50 to-indigo-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950/80 p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -125,7 +81,7 @@ export default function Home() {
         </header>
 
         {/* Dashboard Statistics (Phase 3 feature) */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex items-center gap-4">
             <div className="p-3 bg-indigo-500/10 text-indigo-500 rounded-xl">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,18 +103,6 @@ export default function Home() {
             <div>
               <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Due Today</span>
               <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{dueCardsCount}</span>
-            </div>
-          </div>
-
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex items-center gap-4">
-            <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-              </svg>
-            </div>
-            <div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-bold tracking-wider">Streak</span>
-              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{currentStreak} {currentStreak === 1 ? "day" : "days"}</span>
             </div>
           </div>
         </section>
