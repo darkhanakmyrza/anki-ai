@@ -83,9 +83,11 @@ export default function Home() {
   }, [searchQuery, partOfSpeechFilter]);
 
   const handleCardAddedOrUpdated = () => {
+    setSearchInput("");
+    setPartOfSpeechFilter("all");
     loadStats();
     setPage(1);
-    loadCards(1, searchQuery, partOfSpeechFilter, false);
+    loadCards(1, "", "all", false);
   };
 
   const handleLoadMore = () => {

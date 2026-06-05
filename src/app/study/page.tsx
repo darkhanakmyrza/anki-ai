@@ -7,23 +7,35 @@ import Link from "next/link";
 
 export default function StudyPage() {
   const [cards, setCards] = useState<Card[]>([]);
+  const [stats, setStats] = useState({ total: 0, due: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadCards() {
+    async function loadCardsAndStats() {
       try {
-        const res = await fetch("/api/cards?dueOnly=true");
-        if (!res.ok) throw new Error("Failed to fetch cards.");
-        const data = await res.json();
-        setCards(data);
+        const [cardsRes, statsRes] = await Promise.all([
+          fetch("/api/cards?dueOnly=true"),
+          fetch("/api/cards/stats"),
+        ]);
+        
+        if (!cardsRes.ok) throw new Error("Failed to fetch cards.");
+        if (!statsRes.ok) throw new Error("Failed to fetch stats.");
+        
+        const [cardsData, statsData] = await Promise.all([
+          cardsRes.json(),
+          statsRes.json(),
+        ]);
+        
+        setCards(cardsData);
+        setStats(statsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load cards.");
       } finally {
         setIsLoading(false);
       }
     }
-    loadCards();
+    loadCardsAndStats();
   }, []);
 
   if (isLoading) {
@@ -96,9 +108,9 @@ export default function StudyPage() {
               <p className="text-slate-500 dark:text-slate-400 text-sm">
                 No cards due for review right now.
               </p>
-              {cards.length > 0 ? (
+              {stats.total > 0 ? (
                 <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                  You have {cards.length} total cards in your deck. Next review items will appear as their intervals expire.
+                  You have {stats.total} total cards in your deck. Next review items will appear as their intervals expire.
                 </p>
               ) : (
                 <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
