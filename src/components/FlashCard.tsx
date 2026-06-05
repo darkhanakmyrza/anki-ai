@@ -12,7 +12,7 @@ export default function FlashCard({ card, isFlipped, onFlip }: FlashCardProps) {
   return (
     <div
       onClick={onFlip}
-      className="w-full max-w-2xl min-h-[460px] cursor-pointer perspective-1000 group mx-auto"
+      className="w-full max-w-2xl h-[460px] cursor-pointer perspective-1000 group mx-auto"
     >
       <div
         className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${
