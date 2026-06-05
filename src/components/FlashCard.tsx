@@ -12,7 +12,7 @@ export default function FlashCard({ card, isFlipped, onFlip }: FlashCardProps) {
   return (
     <div
       onClick={onFlip}
-      className="w-full max-w-lg aspect-[3/2] min-h-[320px] cursor-pointer perspective-1000 group mx-auto"
+      className="w-full max-w-2xl min-h-[460px] cursor-pointer perspective-1000 group mx-auto"
     >
       <div
         className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${
@@ -49,40 +49,40 @@ export default function FlashCard({ card, isFlipped, onFlip }: FlashCardProps) {
         {/* BACK FACE */}
         <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-white dark:bg-slate-900 text-slate-850 dark:text-slate-100 rounded-3xl p-8 flex flex-col justify-between shadow-2xl border border-slate-200 dark:border-slate-800 overflow-y-auto">
           {/* Card header */}
-          <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3.5">
             <div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 capitalize">
+              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 capitalize">
                 {card.word}
               </h3>
-              <p className="text-xs text-indigo-500 font-mono mt-0.5">
+              <p className="text-sm text-indigo-500 font-mono mt-1">
                 {card.pronunciation} • <span className="italic">{card.partOfSpeech}</span>
               </p>
             </div>
-            <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-full capitalize">
+            <span className="px-3 py-1 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-full capitalize">
               {card.partOfSpeech}
             </span>
           </div>
 
           {/* Core Card content */}
-          <div className="flex-1 py-4 space-y-4">
+          <div className="flex-1 py-5 space-y-5">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Translation</span>
-              <p className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 leading-tight">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Translation</span>
+              <p className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 leading-tight">
                 {card.translation}
               </p>
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Definition</span>
-              <p className="text-slate-700 dark:text-slate-350 text-sm leading-relaxed">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Definition</span>
+              <p className="text-slate-700 dark:text-slate-350 text-base leading-relaxed">
                 {card.definition}
               </p>
             </div>
 
             {Array.isArray(card.examples) && card.examples.length > 0 && (
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Examples</span>
-                <ul className="list-disc list-inside space-y-1 text-xs text-slate-500 dark:text-slate-400 italic">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Examples</span>
+                <ul className="list-disc list-inside space-y-1.5 text-sm text-slate-500 dark:text-slate-400 italic">
                   {card.examples.slice(0, 2).map((ex, idx) => (
                     <li key={idx}>&ldquo;{ex}&rdquo;</li>
                   ))}
@@ -91,13 +91,13 @@ export default function FlashCard({ card, isFlipped, onFlip }: FlashCardProps) {
             )}
 
             {/* Synonyms and Antonyms */}
-            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+            <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800/60">
               {Array.isArray(card.synonyms) && card.synonyms.length > 0 && (
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Synonyms</span>
-                  <div className="flex flex-wrap gap-1">
-                    {card.synonyms.slice(0, 3).map((syn, idx) => (
-                      <span key={idx} className="text-[10px] px-1.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Synonyms</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {card.synonyms.slice(0, 5).map((syn, idx) => (
+                      <span key={idx} className="text-xs px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded">
                         {syn}
                       </span>
                     ))}
@@ -106,10 +106,10 @@ export default function FlashCard({ card, isFlipped, onFlip }: FlashCardProps) {
               )}
               {Array.isArray(card.antonyms) && card.antonyms.length > 0 && (
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Antonyms</span>
-                  <div className="flex flex-wrap gap-1">
-                    {card.antonyms.slice(0, 3).map((ant, idx) => (
-                      <span key={idx} className="text-[10px] px-1.5 py-0.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Antonyms</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {card.antonyms.slice(0, 5).map((ant, idx) => (
+                      <span key={idx} className="text-xs px-2 py-0.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded">
                         {ant}
                       </span>
                     ))}
@@ -119,7 +119,7 @@ export default function FlashCard({ card, isFlipped, onFlip }: FlashCardProps) {
             </div>
           </div>
 
-          <div className="text-center text-[10px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-2 font-medium">
+          <div className="text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-2.5 font-medium">
             Click to flip back
           </div>
         </div>
