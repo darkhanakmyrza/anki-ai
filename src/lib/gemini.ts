@@ -32,7 +32,7 @@ Rules:
 
   const modelNames = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
   let result = null;
-  let lastError = null;
+  const errors: { model: string; error: any }[] = [];
 
   for (const modelName of modelNames) {
     try {
@@ -44,14 +44,16 @@ Rules:
       });
       result = await model.generateContent(prompt);
       break; // Success!
-    } catch (err) {
-      console.warn(`Failed to generate content with ${modelName}, trying next model...`);
-      lastError = err;
+    } catch (err: any) {
+      console.warn(`Failed to generate content with ${modelName}:`, err?.message || err);
+      errors.push({ model: modelName, error: err });
     }
   }
 
   if (!result) {
-    throw lastError || new Error("All generative models failed.");
+    // Throw the error of the primary model (first one) to avoid obscuring the root cause (e.g. rate limit) with subsequent fallback 404 errors.
+    const primaryError = errors[0]?.error;
+    throw primaryError || new Error("All generative models failed.");
   }
 
   const responseText = result.response.text();
