@@ -9,13 +9,6 @@ export async function generateCardData(word: string): Promise<CardData> {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
-    generationConfig: {
-      responseMimeType: "application/json",
-    },
-  });
-
   const prompt = `
 You are an English dictionary assistant.
 Return ONLY a valid JSON object for the word: "${word}"
@@ -37,7 +30,30 @@ Rules:
 - Return ONLY the JSON. No explanation, no markdown, no backticks.
 `;
 
-  const result = await model.generateContent(prompt);
+  const modelNames = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+  let result = null;
+  let lastError = null;
+
+  for (const modelName of modelNames) {
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: {
+          responseMimeType: "application/json",
+        },
+      });
+      result = await model.generateContent(prompt);
+      break; // Success!
+    } catch (err) {
+      console.warn(`Failed to generate content with ${modelName}, trying next model...`);
+      lastError = err;
+    }
+  }
+
+  if (!result) {
+    throw lastError || new Error("All generative models failed.");
+  }
+
   const responseText = result.response.text();
   
   try {
