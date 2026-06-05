@@ -8,7 +8,7 @@
 
 ## 🌟 Key Features
 
-* **✨ AI-Powered Auto-Fill**: Simply type an English word. The application calls the Google Gemini API to automatically fetch the definition, Russian translation, part of speech, IPA pronunciation, modern example sentences, synonyms, and antonyms.
+* **✨ AI-Powered Auto-Fill**: Simply type an English word. The application calls the Google Gemini API to automatically fetch the definition, translation, part of speech, IPA pronunciation, modern example sentences, synonyms, and antonyms.
 * **✍️ Robust Manual Fallback**: Fully functional without AI keys. Switch to **Manual Entry** mode at any time, or let the app automatically direct you to manual entry if API limits or errors occur.
 * **🧠 Spaced Repetition System (SM-2)**: Implements the **SuperMemo-2 (SM-2)** algorithm. Rate card recall difficulty (*Again*, *Hard*, *Good*, *Easy*) to dynamically schedule review dates.
 * **✏️ Integrated Card Editor**: Edit card details (spelling, definition, translation, synonyms, antonyms, examples) inline via a custom modal dialog.
